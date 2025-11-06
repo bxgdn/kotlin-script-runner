@@ -77,6 +77,7 @@ The application features a split-pane layout:
 
 **Editor Pane (Left):**
 - Editable text area for writing Kotlin scripts
+- Line numbers displayed in the left gutter for easy reference
 - Syntax highlighting with color-coded keywords, strings, and comments
 - Monospaced font optimized for code editing
 - Standard text editing shortcuts (copy, paste, undo, select all)
@@ -124,8 +125,9 @@ For detailed UI specifications, see [UI_DESCRIPTION.md](UI_DESCRIPTION.md).
 ### Interactive Features
 
 **Error Navigation:**
-- Click on any error line in the output pane
+- Click on any error line in the output pane (shows line number in format: `file.kts:LINE:COL:`)
 - The editor automatically jumps to the error location
+- Status bar displays which line was navigated to
 - Works with Kotlin compiler error format: `file.kts:LINE:COL: error message`
 
 **Syntax Highlighting:**
@@ -147,12 +149,13 @@ For detailed UI specifications, see [UI_DESCRIPTION.md](UI_DESCRIPTION.md).
 ### Key Components
 
 **ScriptRunner.java** - Main application class containing:
-- `initializeUI()`: Constructs the GUI layout with split panes
+- `initializeUI()`: Constructs the GUI layout with split panes and line numbers
 - `setupStyles()`: Configures text styles for syntax highlighting
+- `updateLineNumbers()`: Updates the line number gutter when text changes
 - `applySyntaxHighlighting()`: Applies real-time syntax coloring using regex
 - `runScript()`: Manages script execution in background threads
 - `stopScript()`: Terminates running processes
-- `handleOutputClick()`: Parses error locations from output
+- `handleOutputClick()`: Parses error locations from output (including line numbers)
 - `navigateToPosition()`: Moves editor cursor to specific line/column
 
 ### How It Works

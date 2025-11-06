@@ -15,9 +15,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * A GUI tool for executing Kotlin scripts with live output display.
  * Features:
+ * - Line numbers in editor
  * - Syntax highlighting for Kotlin keywords
  * - Live output streaming
- * - Clickable error locations
+ * - Clickable error locations with line numbers
  * - Running status indicator
  * - Exit code indicator
  * - Robust edge case handling
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ScriptRunner extends JFrame {
     // UI Components
     private JTextPane editorPane;
+    private JTextArea lineNumberArea;
     private JTextArea outputArea;
     private JButton runButton;
     private JButton stopButton;
@@ -69,6 +71,9 @@ public class ScriptRunner extends JFrame {
         initializeUI();
         setupDefaultScript();
         setupShutdownHook();
+        
+        // Force initial line number update
+        SwingUtilities.invokeLater(() -> updateLineNumbers());
     }
     
     /**
@@ -148,16 +153,41 @@ public class ScriptRunner extends JFrame {
         editorDoc = editorPane.getStyledDocument();
         setupStyles();
         
-        // Add document listener for syntax highlighting
+        // Line number area
+        lineNumberArea = new JTextArea("1");
+        lineNumberArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        lineNumberArea.setBackground(new Color(240, 240, 240));
+        lineNumberArea.setForeground(new Color(100, 100, 100));
+        lineNumberArea.setEditable(false);
+        lineNumberArea.setFocusable(false);
+        lineNumberArea.setMargin(new Insets(0, 5, 0, 5));
+        lineNumberArea.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(200, 200, 200)));
+        
+        // Ensure proper alignment with editor
+        lineNumberArea.setRows(0);
+        lineNumberArea.setWrapStyleWord(false);
+        lineNumberArea.setLineWrap(false);
+        
+        // Add document listener for syntax highlighting and line numbers
         editorDoc.addDocumentListener(new DocumentListener() {
-            private javax.swing.Timer timer = new javax.swing.Timer(300, e -> applySyntaxHighlighting());
+            private javax.swing.Timer timer = new javax.swing.Timer(300, e -> {
+                applySyntaxHighlighting();
+                updateLineNumbers();
+            });
             
-            public void insertUpdate(DocumentEvent e) { timer.restart(); }
-            public void removeUpdate(DocumentEvent e) { timer.restart(); }
-            public void changedUpdate(DocumentEvent e) { timer.restart(); }
+            public void insertUpdate(DocumentEvent e) { 
+                timer.restart();
+            }
+            public void removeUpdate(DocumentEvent e) { 
+                timer.restart();
+            }
+            public void changedUpdate(DocumentEvent e) { 
+                timer.restart();
+            }
         });
         
         JScrollPane editorScroll = new JScrollPane(editorPane);
+        editorScroll.setRowHeaderView(lineNumberArea);
         editorScroll.setBorder(BorderFactory.createTitledBorder("Kotlin Script Editor"));
         
         // Output area
@@ -233,6 +263,41 @@ public class ScriptRunner extends JFrame {
         try {
             editorDoc.insertString(0, defaultScript, defaultStyle);
             applySyntaxHighlighting();
+            updateLineNumbers();
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Update line numbers in the line number area
+     */
+    private void updateLineNumbers() {
+        try {
+            String text = editorDoc.getText(0, editorDoc.getLength());
+            int lineCount = text.isEmpty() ? 1 : text.split("\n", -1).length;
+            
+            // Calculate the width needed for line numbers
+            int digits = String.valueOf(lineCount).length();
+            int width = Math.max(3, digits);
+            
+            StringBuilder lineNumbers = new StringBuilder();
+            for (int i = 1; i <= lineCount; i++) {
+                String lineNum = String.format("%" + width + "d", i);
+                lineNumbers.append(lineNum).append("\n");
+            }
+            
+            lineNumberArea.setText(lineNumbers.toString());
+            
+            // Set preferred width based on digits
+            FontMetrics fm = lineNumberArea.getFontMetrics(lineNumberArea.getFont());
+            String sampleNumber = "";
+            for (int i = 0; i < width; i++) {
+                sampleNumber += "9";
+            }
+            int preferredWidth = fm.stringWidth(sampleNumber) + 20; // 20 for padding
+            lineNumberArea.setPreferredSize(new Dimension(preferredWidth, 0));
+            lineNumberArea.revalidate();
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -551,6 +616,10 @@ public class ScriptRunner extends JFrame {
             if (matcher.find()) {
                 int errorLine = Integer.parseInt(matcher.group(2));
                 int errorColumn = Integer.parseInt(matcher.group(3));
+                
+                // Show which line was clicked in the status
+                statusLabel.setText("● Navigated to line " + errorLine);
+                statusLabel.setForeground(new Color(33, 150, 243));
                 
                 // Navigate to error location in editor
                 navigateToPosition(errorLine, errorColumn);

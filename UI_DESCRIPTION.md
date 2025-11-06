@@ -15,25 +15,25 @@ A detailed description of the application's user interface components and layout
 │  │ Kotlin Script Editor         │  │  │ Output                   │  │
 │  ├──────────────────────────────┤  │  ├──────────────────────────┤  │
 │  │                              │  │  │                          │  │
-│  │  // Sample Kotlin Script     │  │  │  Hello from Kotlin!      │  │
-│  │  println("Hello from...")    │  │  │  Count: 1                │  │
-│  │                              │  │  │  Count: 2                │  │
-│  │  // Loop example             │  │  │  Count: 3                │  │
-│  │  for (i in 1..5) {           │  │  │  Count: 4                │  │
-│  │      println("Count: $i")    │  │  │  Count: 5                │  │
-│  │      Thread.sleep(500)       │  │  │  Hello, User!            │  │
-│  │  }                           │  │  │  Script completed...     │  │
-│  │                              │  │  │                          │  │
-│  │  // Variables and functions  │  │  │                          │  │
-│  │  val message = "Script..."   │  │  │                          │  │
-│  │  fun greet(name: String) =   │  │  │                          │  │
-│  │      "Hello, $name!"         │  │  │                          │  │
-│  │                              │  │  │                          │  │
-│  │  println(greet("User"))      │  │  │                          │  │
-│  │  println(message)            │  │  │                          │  │
-│  │                              │  │  │                          │  │
-│  │                              │  │  │                          │  │
-│  │                              │  │  │                          │  │
+│  │ 1 │ // Sample Kotlin Script  │  │  │  Hello from Kotlin!      │  │
+│  │ 2 │ println("Hello from...") │  │  │  Count: 1                │  │
+│  │ 3 │                          │  │  │  Count: 2                │  │
+│  │ 4 │ // Loop example          │  │  │  Count: 3                │  │
+│  │ 5 │ for (i in 1..5) {        │  │  │  Count: 4                │  │
+│  │ 6 │     println("Count: $i") │  │  │  Count: 5                │  │
+│  │ 7 │     Thread.sleep(500)    │  │  │  Hello, User!            │  │
+│  │ 8 │ }                        │  │  │  Script completed...     │  │
+│  │ 9 │                          │  │  │                          │  │
+│  │10 │ // Variables & functions │  │  │                          │  │
+│  │11 │ val message = "Script.." │  │  │                          │  │
+│  │12 │ fun greet(name: String)  │  │  │                          │  │
+│  │13 │     "Hello, $name!"      │  │  │                          │  │
+│  │14 │                          │  │  │                          │  │
+│  │15 │ println(greet("User"))   │  │  │                          │  │
+│  │16 │ println(message)         │  │  │                          │  │
+│  │17 │                          │  │  │                          │  │
+│  │18 │                          │  │  │                          │  │
+│  │19 │                          │  │  │                          │  │
 │  └──────────────────────────────┘  │  └──────────────────────────┘  │
 │                                    │                                │
 └─────────────────────────────────────────────────────────────────────┘
@@ -82,6 +82,11 @@ A detailed description of the application's user interface components and layout
 - **Title**: "Kotlin Script Editor"
 - **Background**: White
 - **Font**: Monospaced, 14pt
+- **Line Numbers**:
+  - Displayed in left gutter (gray background)
+  - Gray text color (#646464)
+  - Right border separator line
+  - Automatically updates with content changes
 - **Features**:
   - Editable text area
   - Syntax highlighting with colors:
