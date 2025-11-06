@@ -12,12 +12,12 @@ This application provides an integrated development environment for writing and 
 
 1. **Java Development Kit (JDK) 11 or higher**
    - Check installation: `java -version`
-   - Download from: https://adoptium.net/
+   - Download from: official sources
 
 2. **Kotlin Compiler**
    - Check installation: `kotlinc -version`
    - Install on macOS: `brew install kotlin`
-   - Install on Linux: Download from https://kotlinlang.org/docs/command-line.html
+   - Install on Linux: Download from official sources
    - The tool uses `/usr/bin/env kotlinc` to locate the compiler
 
 ## Building and Running
